@@ -14,6 +14,13 @@ function load() {
   displayOutput();
 }
 
+function updateForm() {
+  tag = tagElement.value;
+  ticket = ticketElement.value.toLowerCase();
+  message = messageElement.value;
+  displayOutput();
+}
+
 function displayOutput() {
   document.getElementById("output").innerHTML = `${tag}(${ticket}): ${message}`;
 }
