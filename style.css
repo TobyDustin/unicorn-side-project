@@ -27,6 +27,7 @@ input {
   font-size: 16pt;
   width: 250px;
   display: block;
+  margin: 5px;
 }
 .outputContainer {
   position: absolute;
