@@ -10,4 +10,10 @@ function load() {
   tagElement = document.getElementById("tag");
   ticketElement = document.getElementById("ticket");
   messageElement = document.getElementById("message");
+
+  displayOutput();
+}
+
+function displayOutput() {
+  document.getElementById("output").innerHTML = `${tag}(${ticket}): ${message}`;
 }
