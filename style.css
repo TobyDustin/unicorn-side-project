@@ -1,3 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
 body {
-  background-color: aqua;
+  font-family: "Roboto", sans-serif;
+  width: 100%;
+}
+.container {
+  width: 500px;
+  margin: 0 auto;
+}
+@media (max-width: 500px) {
+  .container {
+    width: 100vw;
+  }
+}
+
+.inner {
+  height: 200px;
+  background-color: blanchedalmond;
+  border-radius: 12px;
+  padding: 25px;
+  position: relative;
+}
+form,
+select,
+input {
+  font-size: 16pt;
+  width: 250px;
+  display: block;
+}
+.outputContainer {
+  position: absolute;
+  font-size: 16pt;
+  text-align: center;
+  width: 100%;
+  bottom: 15px;
+  left: 0;
 }
