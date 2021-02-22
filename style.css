@@ -24,14 +24,13 @@ body {
 form,
 select,
 input {
-  font-size: 16pt;
   width: 250px;
   display: block;
   margin: 5px;
 }
 .outputContainer {
   position: absolute;
-  font-size: 16pt;
+  font-size: 14pt;
   text-align: center;
   width: 100%;
   bottom: 15px;
