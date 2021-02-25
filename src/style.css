@@ -36,3 +36,12 @@ input {
   bottom: 15px;
   left: 0;
 }
+#error {
+  color: red;
+}
+.valid {
+  display: none;
+}
+.invalid {
+  display: inline-block;
+}

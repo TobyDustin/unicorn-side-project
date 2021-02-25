@@ -1,37 +1,52 @@
-let tag = localStorage.getItem("tag") ?? "feat";
-let ticket = localStorage.getItem("ticket") ?? "gtech-00000";
-let message = localStorage.getItem("message") ?? "";
+let tag = "feat";
+let ticket = "gtech-00000";
+let message = "";
 
 let tagElement = null;
 let ticketElement = null;
 let messageElement = null;
+let outputElement = null;
+let errorElement = null;
 
 function load() {
   tagElement = document.getElementById("tag");
   ticketElement = document.getElementById("ticket");
   messageElement = document.getElementById("message");
+  outputElement = document.getElementById("output");
+  errorElement = document.getElementById("error");
+}
 
-  fillForm();
+function updateForm(element) {
+  switch (element) {
+    case "tag":
+      tag = tagElement.value;
+      break;
+    case "ticket":
+      ticket = validateTicket(ticketElement.value.toLowerCase()) ?? "";
+      break;
+    case "message":
+      let tempMessage = messageElement.value;
+      if (validateMessage(tempMessage)) {
+        message = tempMessage;
+      }
+      break;
+  }
   displayOutput();
 }
-function fillForm() {
-  tagElement.value = tag;
-  ticketElement.value = ticket;
-  messageElement.value = message;
+function validateTicket(ticket) {
+  let regex = /gtech-\d{5}/g;
+  return ticket.match(regex);
 }
-
-function updateForm() {
-  tag = tagElement.value;
-  ticket = ticketElement.value.toLowerCase();
-  message = messageElement.value;
-
-  localStorage.setItem("tag", tag);
-  localStorage.setItem("ticket", ticket);
-  localStorage.setItem("message", message);
-
-  displayOutput();
+function validateMessage(message) {
+  if (message.length < 100) {
+    errorElement.className = "valid";
+    errorElement.classList.remove("invalid");
+    return true;
+  } else {
+    errorElement.className = "invalid";
+    return false;
+  }
 }
-
 function displayOutput() {
-  document.getElementById("output").innerHTML = `${tag}(${ticket}): ${message}`;
+  outputElement.innerHTML = `${tag}(${ticket}): ${message}`;
 }
