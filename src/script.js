@@ -1,12 +1,12 @@
-let tag = "feat";
-let ticket = "gtech-00000";
-let message = "";
-
 let tagElement = null;
 let ticketElement = null;
 let messageElement = null;
 let outputElement = null;
 let errorElement = null;
+
+// var option = document.createElement("option");
+// option.text = "nothing";
+// tagElement.add(option);
 
 function load() {
   tagElement = document.getElementById("tag");
@@ -14,22 +14,33 @@ function load() {
   messageElement = document.getElementById("message");
   outputElement = document.getElementById("output");
   errorElement = document.getElementById("error");
+
+  tagElement.addEventListener("input", updateTag);
+  ticketElement.addEventListener("input", updateTicket);
+  messageElement.addEventListener("input", updateMessage);
 }
 
-function updateForm(element) {
-  switch (element) {
-    case "tag":
-      tag = tagElement.value;
-      break;
-    case "ticket":
-      ticket = validateTicket(ticketElement.value.toLowerCase()) ?? "";
-      break;
-    case "message":
-      let tempMessage = messageElement.value;
-      if (validateMessage(tempMessage)) {
-        message = tempMessage;
-      }
-      break;
+const state = {
+  tag: "",
+  ticket: "",
+  message: "",
+  error: false,
+  errorMessage: "The commit message should be less than 100 characters",
+};
+
+function updateTag() {
+  state.tag = tagElement.value;
+  displayOutput();
+}
+function updateTicket() {
+  state.ticket = validateTicket(ticketElement.value.toLowerCase()) ?? "";
+  displayOutput();
+}
+
+function updateMessage() {
+  let tempMessage = messageElement.value;
+  if (validateMessage(tempMessage)) {
+    state.message = tempMessage;
   }
   displayOutput();
 }
@@ -48,5 +59,6 @@ function validateMessage(message) {
   }
 }
 function displayOutput() {
-  outputElement.innerHTML = `${tag}(${ticket}): ${message}`;
+  state.output = `${state.tag}(${state.ticket}): ${state.message}`;
+  outputElement.innerHTML = state.output;
 }

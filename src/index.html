@@ -13,7 +13,7 @@
         <div class="inner">
             <div class="form">
                     <label for="tag">Tag:</label>
-                    <select onchange="" id="tag" oninput="updateForm('tag')">
+                    <select id="tag">
                         <option value="feat">Feature - a new feature</option>
                         <option value="fix">Fix - A bug fix</option>
                         <option value="docs">Documentation - only changes to documentation</option>
@@ -24,9 +24,9 @@
                         <option value="chore">Chore - Changes to build proccess</option>
                     </select>
                     <label for="ticket">Ticket:</label>
-                    <input type="text" id="ticket" placeholder="GTECH-00000" id="ticket" oninput="updateForm('ticket')">
+                    <input type="text" id="ticket" placeholder="GTECH-00000" id="ticket" >
                     <label for="message">Message:</label>
-                    <input type="text" id="message" placeholder="This is my commit" id="message" oninput="updateForm('message')">
+                    <input type="text" id="message" placeholder="This is my commit" id="message">
             </div>
             <div id="error" class="valid">The commit message should be less than 100 characters</div>
             <div class="outputContainer">
