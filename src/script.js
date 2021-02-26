@@ -1,8 +1,3 @@
-let tagElement = null;
-let ticketElement = null;
-let messageElement = null;
-let outputElement = null;
-let errorElement = null;
 let root = null;
 
 const state = {
@@ -12,24 +7,46 @@ const state = {
   error: false,
   errorMessage: "The commit message should be less than 100 characters",
 };
-// var option = document.createElement("option");
-// option.text = "nothing";
-// tagElement.add(option);
-
+const TAG_OPTIONS = [
+  {
+    value: "feat",
+    text: "Feature - a new feature",
+  },
+  {
+    value: "fix",
+    text: "Fix - A bug fix",
+  },
+  {
+    value: "docs",
+    text: "Documentation - only changes to documentation",
+  },
+  {
+    value: "style",
+    text: "Style - changes that do not affect the code functionality",
+  },
+  {
+    value: "refactor",
+    text: "Refactor - A code change that improves the performance",
+  },
+  {
+    value: "perf",
+    text: "Performance - A code change that affects performance",
+  },
+  {
+    value: "test",
+    text: "Test - Adding missing tests",
+  },
+  {
+    value: "chore",
+    text: "Chore - Changes to build proccess",
+  },
+];
 function load() {
   root = document.getElementById("root");
 
+  root.appendChild(new TagSelect().create());
   root.appendChild(new TicketInput().create());
   root.appendChild(new MessageInput().create());
-  // tagElement = document.getElementById("tag");
-  // ticketElement = document.getElementById("ticket");
-  // messageElement = document.getElementById("message");
-  // outputElement = document.getElementById("output");
-  // errorElement = document.getElementById("error");
-
-  // tagElement.addEventListener("input", updateTag);
-  // ticketElement.addEventListener("input", updateTicket);
-  // messageElement.addEventListener("input", updateMessage);
 }
 const InputFactory = () => {
   this.create = ({
@@ -39,12 +56,12 @@ const InputFactory = () => {
     eventType,
     eventHandler,
   }) => {
-    var inputContainer = document.createElement("div");
+    let inputContainer = document.createElement("div");
 
-    var label = document.createElement("label");
+    let label = document.createElement("label");
     label.innerHTML = name;
 
-    var input = document.createElement("input");
+    let input = document.createElement("input");
     input.placeholder = placeholder;
     input.id = name;
     input.addEventListener(eventType, eventHandler);
@@ -56,6 +73,44 @@ const InputFactory = () => {
   };
   return this;
 };
+
+const SelectFactory = () => {
+  this.addOptions = (options) => {
+    let optionsElements = [];
+    options.forEach((optionConf) => {
+      let option = document.createElement("option");
+      option.value = optionConf.value;
+      option.innerHTML = optionConf.text;
+
+      optionsElements.push(option);
+    });
+    return optionsElements;
+  };
+  this.create = ({
+    name = "Select",
+    options = [],
+    eventType,
+    eventHandler,
+  }) => {
+    let selectContainer = document.createElement("div");
+
+    let label = document.createElement("label");
+    label.innerHTML = name;
+
+    let select = document.createElement("select");
+    this.addOptions(options).forEach((opt) => {
+      select.add(opt);
+    });
+    select.addEventListener(eventType, eventHandler);
+
+    selectContainer.appendChild(label);
+    selectContainer.appendChild(select);
+
+    return selectContainer;
+  };
+  return this;
+};
+
 class Input {
   constructor(
     config = { name: "name", placeholder: "input", eventType: "click" }
@@ -65,9 +120,7 @@ class Input {
   }
 
   validateInput = () => {};
-  handleInput = () => {
-    console.log(this.element.children[1].value);
-  };
+  handleInput = () => {};
 
   createElement = () => {
     this.element = InputFactory().create({
@@ -80,7 +133,34 @@ class Input {
   };
   create = () => this.element ?? this.createElement();
 }
+class Select {
+  constructor(conf) {
+    this.element = null;
+    this.conf = conf;
+  }
+  handleInput = () => {};
+  createElement = () => {
+    this.element = SelectFactory().create({
+      ...this.conf,
+      eventHandler: this.handleInput,
+    });
+    return this.element;
+  };
+  create = () => this.element ?? this.createElement();
+}
 
+class TagSelect extends Select {
+  constructor() {
+    super({
+      name: "tag",
+      eventType: "change",
+      options: TAG_OPTIONS,
+    });
+  }
+  handleInput = () => {
+    state.tag = this.element.children[1].value;
+  };
+}
 class TicketInput extends Input {
   constructor() {
     super({
@@ -106,30 +186,4 @@ class MessageInput extends Input {
     state.message = this.element.children[1].value;
     console.log(state);
   };
-}
-
-function updateTag() {
-  state.tag = tagElement.value;
-  displayOutput();
-}
-function updateTicket() {
-  state.ticket = validateTicket(ticketElement.value.toLowerCase()) ?? "";
-  displayOutput();
-}
-
-function updateMessage() {
-  let tempMessage = messageElement.value;
-  if (validateMessage(tempMessage)) {
-    state.message = tempMessage;
-  }
-  displayOutput();
-}
-function validateTicket(ticket) {
-  let regex = /gtech-\d{5}/g;
-  return ticket.match(regex);
-}
-function validateMessage(message) {}
-function displayOutput() {
-  state.output = `${state.tag}(${state.ticket}): ${state.message}`;
-  outputElement.innerHTML = state.output;
 }
