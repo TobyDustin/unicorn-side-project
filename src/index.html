@@ -11,7 +11,7 @@
     <script src="script.js"></script>
     <div class="container">
         <div class="inner">
-            <div class="form">
+            <div class="form" id="root">
                     <label for="tag">Tag:</label>
                     <select id="tag">
                         <option value="feat">Feature - a new feature</option>
@@ -23,10 +23,6 @@
                         <option value="test">Test - Adding missing tests</option>
                         <option value="chore">Chore - Changes to build proccess</option>
                     </select>
-                    <label for="ticket">Ticket:</label>
-                    <input type="text" id="ticket" placeholder="GTECH-00000" id="ticket" >
-                    <label for="message">Message:</label>
-                    <input type="text" id="message" placeholder="This is my commit" id="message">
             </div>
             <div id="error" class="valid">The commit message should be less than 100 characters</div>
             <div class="outputContainer">
