@@ -1,11 +1,10 @@
 const state = {
-  tag: "",
+  tag: "feat",
   ticket: "",
   message: "",
   error: false,
-  errorMessage: "The commit message should be less than 100 characters",
+  errorMessage: "ticket or message incorrect",
 };
-
 const TAG_OPTIONS = [
   {
     value: "feat",
@@ -49,7 +48,7 @@ const InputFactory = () => {
     eventHandler,
   }) => {
     let inputContainer = document.createElement("div");
-
+    inputContainer.id = name + type;
     let label = document.createElement("label");
     label.innerHTML = name;
 
@@ -105,10 +104,16 @@ const SelectFactory = () => {
 
 class Input {
   constructor(
-    config = { name: "name", placeholder: "input", eventType: "click" }
+    config = {
+      name: "name",
+      placeholder: "input",
+      eventType: "click",
+    },
+    render
   ) {
     this.element = null;
     this.config = config;
+    this.render = render;
   }
 
   validateInput = () => {};
@@ -126,9 +131,10 @@ class Input {
   create = () => this.element ?? this.createElement();
 }
 class Select {
-  constructor(conf) {
+  constructor(conf, render) {
     this.element = null;
     this.conf = conf;
+    this.render = render;
   }
   handleInput = () => {};
   createElement = () => {
@@ -142,53 +148,109 @@ class Select {
 }
 
 class TagSelect extends Select {
-  constructor(state) {
-    super({
-      name: "tag",
-      eventType: "change",
-      options: TAG_OPTIONS,
-    });
-    this.state = state;
+  constructor(render) {
+    super(
+      {
+        name: "tag",
+        eventType: "change",
+        options: TAG_OPTIONS,
+      },
+      render
+    );
   }
   handleInput = () => {
     state.tag = this.element.children[1].value;
+    this.render();
   };
 }
 class TicketInput extends Input {
-  constructor(state) {
-    super({
-      name: "ticket",
-      placeholder: "gtech-00000",
-      eventType: "input",
-    });
-    this.state = state;
+  constructor(render) {
+    super(
+      {
+        name: "ticket",
+        placeholder: "gtech-00000",
+        eventType: "input",
+      },
+      render
+    );
   }
+  validateInput = (input) => {
+    let regex = /gtech-\d{5}/g;
+    return input.match(regex);
+  };
   handleInput = () => {
-    state.ticket = this.element.children[1].value;
-    console.log(state);
+    let input = this.validateInput(this.element.children[1].value);
+    if (input) {
+      state.error = false;
+      state.ticket = input[0];
+    } else {
+      state.error = true;
+    }
+    this.render();
   };
 }
 class MessageInput extends Input {
-  constructor() {
-    super({
-      name: "message",
-      placeholder: "this is a commit message",
-      eventType: "input",
-    });
+  constructor(render) {
+    super(
+      {
+        name: "message",
+        placeholder: "this is a commit message",
+        eventType: "input",
+      },
+      render
+    );
   }
+  validateInput = (input) => {
+    return input.length < 100 ? true : false;
+  };
   handleInput = () => {
-    state.message = this.element.children[1].value;
-    console.log(state);
+    let input = this.element.children[1].value;
+    if (this.validateInput(input)) {
+      state.error = false;
+      state.message = input;
+    } else {
+      state.error = true;
+    }
+    this.render();
+  };
+}
+
+class Error {
+  create = () => {
+    let error = document.createElement("div");
+    error.class = "invalid";
+    error.id = "error";
+    error.innerHTML = state.errorMessage;
+    return error;
+  };
+}
+class Output {
+  create = (text) => {
+    let output = document.createElement("code");
+    output.id = "output";
+    output.innerHTML = text;
+    return output;
   };
 }
 class App {
   constructor() {
     this.root = document.getElementById("root");
+    this.oldState = null;
+  }
+
+  render() {
+    let error = document.getElementById("error");
+    let outputElement = document.getElementById("output");
+    error.innerHTML = state.error ? state.errorMessage : "";
+
+    outputElement.innerHTML = "";
+    outputElement.innerHTML = `${state.tag}(${state.ticket}):${state.message}`;
   }
   load() {
-    root.appendChild(new TagSelect().create());
-    root.appendChild(new TicketInput().create());
-    root.appendChild(new MessageInput().create());
+    root.appendChild(new TagSelect(this.render).create());
+    root.appendChild(new TicketInput(this.render).create());
+    root.appendChild(new MessageInput(this.render).create());
+    this.render();
   }
 }
 
