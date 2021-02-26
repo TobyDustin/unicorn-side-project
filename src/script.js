@@ -1,5 +1,3 @@
-let root = null;
-
 const state = {
   tag: "",
   ticket: "",
@@ -7,6 +5,7 @@ const state = {
   error: false,
   errorMessage: "The commit message should be less than 100 characters",
 };
+
 const TAG_OPTIONS = [
   {
     value: "feat",
@@ -41,13 +40,6 @@ const TAG_OPTIONS = [
     text: "Chore - Changes to build proccess",
   },
 ];
-function load() {
-  root = document.getElementById("root");
-
-  root.appendChild(new TagSelect().create());
-  root.appendChild(new TicketInput().create());
-  root.appendChild(new MessageInput().create());
-}
 const InputFactory = () => {
   this.create = ({
     name,
@@ -150,24 +142,26 @@ class Select {
 }
 
 class TagSelect extends Select {
-  constructor() {
+  constructor(state) {
     super({
       name: "tag",
       eventType: "change",
       options: TAG_OPTIONS,
     });
+    this.state = state;
   }
   handleInput = () => {
     state.tag = this.element.children[1].value;
   };
 }
 class TicketInput extends Input {
-  constructor() {
+  constructor(state) {
     super({
       name: "ticket",
       placeholder: "gtech-00000",
       eventType: "input",
     });
+    this.state = state;
   }
   handleInput = () => {
     state.ticket = this.element.children[1].value;
@@ -187,3 +181,17 @@ class MessageInput extends Input {
     console.log(state);
   };
 }
+class App {
+  constructor() {
+    this.root = document.getElementById("root");
+  }
+  load() {
+    root.appendChild(new TagSelect().create());
+    root.appendChild(new TicketInput().create());
+    root.appendChild(new MessageInput().create());
+  }
+}
+
+const start = () => {
+  new App().load();
+};
